@@ -15,10 +15,24 @@ export function Receiver(){
                 // Create Answer
                 const pc = new RTCPeerConnection();
                 pc.setRemoteDescription(message.sdp);
+                pc.onicecandidate = (event) => {
+                    console.log("this is print receiver "+ event);
+                    if(event.candidate) {
+                        socket?.send(JSON.stringify ({ type: 'iceCandidate', candidtes: event.candidate }));
+                    }
+                }
+
+                pc.ontrack = (track) => {
+                    console.log(track);
+                }
+        
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
                 socket.send(JSON.stringify({ type:'create-answer', sdp: pc.localDescription }));
-            }
+            } else if (message.type === 'iceCandidate') {
+                const pc = new RTCPeerConnection();
+                pc.addIceCandidate(message.candidate); // 59:40  
+            } 
         }
     }, []);
 

@@ -20,21 +20,20 @@ wss.on('connection', function connection(ws) {
             receiverSocket = ws;
         }
         // Create Offer
-        else if (message.type === 'createoffer') {
+        else if (message.type === 'create-offer') {
             if (ws !== senderSocket) {
                 return;
             }
             console.log("got the offer");
-            receiverSocket === null || receiverSocket === void 0 ? void 0 : receiverSocket.send(JSON.stringify({ type: 'createofferr', sdp: message.sdp }));
+            receiverSocket === null || receiverSocket === void 0 ? void 0 : receiverSocket.send(JSON.stringify({ type: 'create-offer', sdp: message.sdp }));
         }
         // Create Answer
-        else if (message.type === 'createanswer') {
-            console.log("before receiversocket");
+        else if (message.type === 'create-answer') {
             if (ws !== receiverSocket) {
                 return;
             }
             console.log("got the answer");
-            senderSocket === null || senderSocket === void 0 ? void 0 : senderSocket.send(JSON.stringify({ type: 'createanswer', sdp: message.sdp }));
+            senderSocket === null || senderSocket === void 0 ? void 0 : senderSocket.send(JSON.stringify({ type: 'create-answer', sdp: message.sdp }));
         }
         // Add Ice Candidate
         else if (message.type === 'icecandidate') {

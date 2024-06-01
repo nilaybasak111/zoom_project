@@ -6,7 +6,6 @@ export function Sender(){
     useEffect(() => {
         const socket = new WebSocket("ws://localhost:8080");
         socket.onopen = () => {
-            console.log("inside socket sender");
             socket.send(JSON.stringify({ type: 'Sender' }));
         }
         setSocket(socket)
@@ -17,17 +16,24 @@ export function Sender(){
         if(!socket) return;
         // Create Offer
         const pc = new RTCPeerConnection();
-        console.log("peerconnection sender");
         const offer = await pc.createOffer();
-        console.log(offer); // May be it sends the sdp
+        console.log(offer); // It sends the sdp
         await pc.setLocalDescription(offer);
-        console.log("local dec set");
+
+        pc.onicecandidate = (event) => {
+            console.log("this is print sender "+ event);
+            if(event.candidate) {
+                socket?.send(JSON.stringify ({ type: 'iceCandidate', candidtes: event.candidate }));
+            }
+        }
         socket?.send(JSON.stringify({ type: 'create-offer', sdp: pc.localDescription }));
 
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
             if (data.type === 'create-answer') {
                 pc.setRemoteDescription(data.sdp);
+            } else if (data.type === 'iceCandidate') {
+                pc.addIceCandidate(data.candidate);
             }
 
         }

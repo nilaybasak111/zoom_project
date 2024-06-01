@@ -35,7 +35,6 @@ wss.on('connection', function connection(ws) {
 
     // Create Answer
     else if (message.type === 'create-answer') {
-      console.log("before receiversocket");
       if (ws !== receiverSocket) {
         return;
       }
