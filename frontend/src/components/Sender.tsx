@@ -16,9 +16,13 @@ export function Sender(){
         if(!socket) return;
         // Create Offer
         const pc = new RTCPeerConnection();
-        const offer = await pc.createOffer();
-        console.log(offer); // It sends the sdp
-        await pc.setLocalDescription(offer);
+        pc.onnegotiationneeded = async () => {
+            const offer = await pc.createOffer();
+            console.log(offer); // It sends the sdp
+            await pc.setLocalDescription(offer);
+            socket?.send(JSON.stringify({ type: 'create-offer', sdp: pc.localDescription }));
+        }
+        
 
         pc.onicecandidate = (event) => {
             console.log("this is print sender "+ event);
@@ -26,7 +30,6 @@ export function Sender(){
                 socket?.send(JSON.stringify ({ type: 'iceCandidate', candidtes: event.candidate }));
             }
         }
-        socket?.send(JSON.stringify({ type: 'create-offer', sdp: pc.localDescription }));
 
         socket.onmessage = (event) => {
             const data = JSON.parse(event.data);
