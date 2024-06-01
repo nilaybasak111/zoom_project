@@ -1,42 +1,40 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from "react"
 
-export function Sender() {
-  const [socket, setSocket] = useState<WebSocket | null>(null);
+export function Sender(){
+    const [ socket, setSocket] = useState<WebSocket | null>(null);
 
-  useEffect(() => {
-    const socket = new WebSocket("ws://localhost:8080");
-    socket.onopen = () => {
-      socket.send(JSON.stringify({ type: "sender" }));
-    };
-    setSocket(socket);
-  }, []);
+    useEffect(() => {
+        const socket = new WebSocket("ws://localhost:8080");
+        socket.onopen = () => {
+            console.log("inside socket sender");
+            socket.send(JSON.stringify({ type: 'Sender' }));
+        }
+        setSocket(socket)
+    }, []);
 
-  // Here we will write all Webrtc Logics
-  async function startsendigvideo() {
-    if (!socket) return;
-    // Create an Offer
-    const pc = new RTCPeerConnection();
-    const offer = await pc.createOffer();
-    await pc.setLocalDescription(offer);
-    console.log(offer); // probably gives SDP
-    socket?.send(
-      JSON.stringify({ type: "create-offer", sdp: pc.localDescription })
-    );
+    // Here we write all WebRtc Logic
+    async function startSendingVideo() {
+        if(!socket) return;
+        // Create Offer
+        const pc = new RTCPeerConnection();
+        console.log("peerconnection sender");
+        const offer = await pc.createOffer();
+        console.log(offer); // May be it sends the sdp
+        await pc.setLocalDescription(offer);
+        console.log("local dec set");
+        socket?.send(JSON.stringify({ type: 'create-offer', sdp: pc.localDescription }));
 
-    // We have to catch the message that receiver sends
-    socket.onmessage = async (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === "create-answer") {
-        pc.setRemoteDescription(data.sdp);
-      }
-    };
-  }
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'create-answer') {
+                pc.setRemoteDescription(data.sdp);
+            }
 
-  return (
-    <div>
-      sender
-      <button onClick={startsendigvideo}>Send Video</button>
-    </div>
-  );
+        }
+    }
+   
+    return <div>
+        Sender
+        <button onClick={startSendingVideo}>Send Video</button>
+        </div>
 }
-//38.33

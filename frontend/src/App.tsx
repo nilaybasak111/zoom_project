@@ -1,8 +1,8 @@
-import { useState } from "react";
-import "./App.css";
-import { Route, BrowserRouter, Routes } from "react-router-dom";
-import { Sender } from "./components/Sender";
-import { Receiver } from "./components/Receiver";
+import { useState } from 'react'
+import './App.css'
+import { Route, BrowserRouter, Routes } from 'react-router-dom'
+import { Sender } from './components/Sender'
+import { Receiver } from './components/Receiver'
 
 function App() {
   return (
@@ -12,7 +12,7 @@ function App() {
         <Route path="/receiver" element={<Receiver />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
