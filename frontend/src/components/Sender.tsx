@@ -37,6 +37,10 @@ export function Sender(){
             }
 
         }
+
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        pc.addTrack(stream.getVideoTracks()[0]); // Get the video from here
+        pc.addTrack(stream.getAudioTracks()[0]); // Get the Audio from here
     }
    
     return <div>

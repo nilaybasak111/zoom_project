@@ -10,11 +10,13 @@ export function Receiver(){
 
         socket.onmessage = async (event) => {
             const message = JSON.parse(event.data);
+            //let pc: RTCPeerConnection | null = null;
             if (message.type === 'create-offer') {
                 // Create Answer
                 const pc = new RTCPeerConnection();
                 pc.setRemoteDescription(message.sdp);
-                pc.onicecandidate = (event) => {
+                
+                 pc.onicecandidate = (event) => {
                     console.log("this is print receiver "+ event);
                     if(event.candidate) {
                         socket?.send(JSON.stringify ({ type: 'iceCandidate', candidtes: event.candidate }));
