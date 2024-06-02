@@ -13,10 +13,11 @@ export function Sender(){
 
     // Here we write all WebRtc Logic
     async function startSendingVideo() {
-        if(!socket) return;
+        if(!socket) {return};
         // Create Offer
         const pc = new RTCPeerConnection();
         pc.onnegotiationneeded = async () => {
+            console.log("onnegotiationneeded");
             const offer = await pc.createOffer();
             console.log(offer); // It sends the sdp
             await pc.setLocalDescription(offer);
@@ -27,7 +28,8 @@ export function Sender(){
         pc.onicecandidate = (event) => {
             console.log("this is print sender "+ event);
             if(event.candidate) {
-                socket?.send(JSON.stringify ({ type: 'iceCandidate', candidtes: event.candidate }));
+                console.log("inside sender event.candidate ");
+                socket?.send(JSON.stringify ({ type: 'iceCandidate', candidate: event.candidate }));
             }
         }
 
@@ -37,17 +39,17 @@ export function Sender(){
                 pc.setRemoteDescription(data.sdp);
             } else if (data.type === 'iceCandidate') {
                 pc.addIceCandidate(data.candidate);
-            }
-
         }
-
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        pc.addTrack(stream.getVideoTracks()[0]); // Get the video from here
-        pc.addTrack(stream.getAudioTracks()[0]); // Get the Audio from here
     }
+
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        pc.addTrack(stream.getVideoTracks()[0]); // Get the video from here
+        //pc.addTrack(stream.getAudioTracks()[0]); // Get the Audio from here
+    }
+    
    
     return <div>
         Sender
         <button onClick={startSendingVideo}>Send Video</button>
         </div>
-}
+} 

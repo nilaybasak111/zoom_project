@@ -46,9 +46,11 @@ wss.on('connection', function connection(ws) {
     else if (message.type === 'icecandidate') {
       // Checks is it come from SenderSocket
       if (ws === senderSocket) {
+        console.log("Got ic 1")
         receiverSocket?.send(JSON.stringify({ type: 'iceCandidate', candidate: message.candidate }));
       } else if (ws === receiverSocket) {
         // Checks is it come from ReceiverSocket
+        console.log("Got ic 2")
         senderSocket?.send(JSON.stringify({ type: 'iceCandidate', candidate: message.candidate }));
       }
     }
