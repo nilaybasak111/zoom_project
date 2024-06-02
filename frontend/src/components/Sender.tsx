@@ -5,15 +5,18 @@ export function Sender(){
 
     useEffect(() => {
         const socket = new WebSocket("ws://localhost:8080");
+        setSocket(socket);
         socket.onopen = () => {
             socket.send(JSON.stringify({ type: 'Sender' }));
         }
-        setSocket(socket)
     }, []);
 
     // Here we write all WebRtc Logic
     async function startSendingVideo() {
-        if(!socket) {return};
+        if (!socket) {
+            alert("Socket not found");
+            return;
+        }
         // Create Offer
         const pc = new RTCPeerConnection();
         pc.onnegotiationneeded = async () => {
@@ -33,10 +36,10 @@ export function Sender(){
             }
         }
 
-        socket.onmessage = (event) => {
+        socket.onmessage = async (event) => {
             const data = JSON.parse(event.data);
             if (data.type === 'create-answer') {
-                pc.setRemoteDescription(data.sdp);
+                await pc.setRemoteDescription(data.sdp);
             } else if (data.type === 'iceCandidate') {
                 pc.addIceCandidate(data.candidate);
         }

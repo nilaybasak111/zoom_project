@@ -36,7 +36,7 @@ wss.on('connection', function connection(ws) {
             senderSocket === null || senderSocket === void 0 ? void 0 : senderSocket.send(JSON.stringify({ type: 'create-answer', sdp: message.sdp }));
         }
         // Add Ice Candidate
-        else if (message.type === 'icecandidate') {
+        else if (message.type === 'iceCandidate') {
             // Checks is it come from SenderSocket
             if (ws === senderSocket) {
                 console.log("Got ic 1");

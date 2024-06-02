@@ -43,7 +43,7 @@ wss.on('connection', function connection(ws) {
     }
 
     // Add Ice Candidate
-    else if (message.type === 'icecandidate') {
+    else if (message.type === 'iceCandidate') {
       // Checks is it come from SenderSocket
       if (ws === senderSocket) {
         console.log("Got ic 1")
