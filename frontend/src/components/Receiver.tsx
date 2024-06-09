@@ -27,9 +27,12 @@ export function Receiver(){
 
                 pc.ontrack = (event) => {
                     const video = document.createElement('video');
+                    video.controls = true;
                     document.body.appendChild(video);
                     video.srcObject = new MediaStream([event.track]);
-                    video.play();
+                    setTimeout(() => {
+                        video.play();
+                    }, 1000)
                 }
         
                 const answer = await pc.createAnswer();

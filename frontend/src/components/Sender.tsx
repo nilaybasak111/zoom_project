@@ -48,6 +48,10 @@ export function Sender(){
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         pc.addTrack(stream.getVideoTracks()[0]); // Get the video from here
         //pc.addTrack(stream.getAudioTracks()[0]); // Get the Audio from here
+        const video = document.createElement('video');
+        document.body.appendChild(video);
+        video.srcObject= stream;
+        video.play();
     }
     
    
